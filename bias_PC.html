@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIAS — 아이돌 최애 스타일 팬덤 커머스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808; --bg2:#101010; --bg3:#161616; --bg4:#1e1e1e;
+  --border:#222; --border2:#2e2e2e; --border3:#3a3a3a;
+  --text:#efefef; --text2:#888; --text3:#4a4a4a;
+  --accent:#e8ff47; --accent2:#ff3d57; --accent3:#a78bfa;
+  --sidebar:220px; --header:56px;
+  --mono:'DM Mono',monospace;
+  --sans:'Noto Sans KR',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+
+/* ─── LAYOUT ─── */
+.layout{display:grid;grid-template-columns:var(--sidebar) 1fr;grid-template-rows:var(--header) 1fr;height:100vh}
+.header{grid-column:1/-1;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 0;z-index:200;position:relative}
+.header-left{display:flex;align-items:center;gap:0;width:var(--sidebar);padding:0 20px;border-right:1px solid var(--border);height:100%}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--accent);cursor:pointer}
+.logo-sub{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1px;margin-left:8px;margin-top:2px}
+.header-search{flex:1;max-width:480px;display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0 14px;height:36px;margin:0 24px}
+.header-search input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%;font-family:var(--sans)}
+.header-search input::placeholder{color:var(--text3)}
+.header-search i{font-size:16px;color:var(--text3)}
+.header-right{display:flex;align-items:center;gap:18px}
+.hbtn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--sans);border:none;transition:all 0.15s}
+.hbtn-ghost{background:none;color:var(--text2);border:1px solid var(--border2)}
+.hbtn-ghost:hover{border-color:var(--border3);color:var(--text)}
+.hbtn-accent{background:var(--accent);color:#080808;font-weight:700}
+.hbtn-accent:hover{opacity:0.88}
+.hbtn i{font-size:15px}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);position:absolute;top:10px;right:10px}
+
+/* ─── SIDEBAR ─── */
+.sidebar{background:var(--bg);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;scrollbar-width:none}
+.sidebar::-webkit-scrollbar{display:none}
+.snav-label{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;padding:0 16px;margin:16px 0 6px;text-transform:uppercase}
+.snav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;border-radius:0;font-size:13px;color:var(--text2);transition:all 0.12s;border-left:2px solid transparent}
+.snav-item:hover{color:var(--text);background:var(--bg3)}
+.snav-item.active{color:var(--accent);background:rgba(232,255,71,0.05);border-left-color:var(--accent)}
+.snav-item i{font-size:18px;flex-shrink:0}
+.snav-divider{border:none;border-top:1px solid var(--border);margin:10px 0}
+.idol-nav{padding:0 10px}
+.idol-nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;cursor:pointer;transition:all 0.12s}
+.idol-nav-item:hover{background:var(--bg3)}
+.idol-nav-item.active{background:rgba(232,255,71,0.06)}
+.idol-nav-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:1.5px solid var(--border2);flex-shrink:0;font-family:var(--mono)}
+.idol-nav-item.active .idol-nav-avatar{border-color:var(--accent)}
+.idol-nav-name{font-size:12px;color:var(--text2)}
+.idol-nav-item.active .idol-nav-name{color:var(--accent)}
+.idol-nav-count{font-size:10px;color:var(--text3);margin-left:auto;font-family:var(--mono)}
+
+/* ─── MAIN ─── */
+.main{overflow-y:auto;background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.main::-webkit-scrollbar{width:5px}
+.main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.screen{display:none;min-height:100%}
+.screen.active{display:block}
+
+/* ─── BANNER ─── */
+.banner-area{padding:20px 28px 0;margin-bottom:4px}
+.banner-slider{position:relative;overflow:hidden;border-radius:10px}
+.banner-track{display:flex;transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)}
+.banner-slide{min-width:100%;padding:20px 24px;display:flex;align-items:center;gap:20px;position:relative;cursor:pointer;border:1px solid transparent}
+.banner-slide::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:10px 0 0 10px}
+.b-badge{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:1px;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.b-today{background:rgba(232,255,71,0.12);color:var(--accent);border:1px solid rgba(232,255,71,0.2)}
+.b-ad{background:var(--bg4);color:var(--text3);border:1px solid var(--border2)}
+.b-content{flex:1;min-width:0}
+.b-kicker{font-size:13px;font-weight:600;margin-bottom:4px}
+.b-copy{font-size:13px;color:#bbb;line-height:1.5}
+.b-cta{font-size:11px;color:var(--text3);margin-top:6px;display:flex;align-items:center;gap:4px;font-family:var(--mono)}
+.b-emoji{font-size:36px;flex-shrink:0;opacity:0.85}
+.banner-controls{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 0}
+.b-dots{display:flex;gap:5px}
+.b-dot{width:5px;height:5px;border-radius:50%;background:var(--border2);cursor:pointer;transition:all 0.2s}
+.b-dot.on{background:var(--accent);width:16px;border-radius:3px}
+.b-arrows{display:flex;gap:6px}
+.b-arrow{width:26px;height:26px;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:14px;transition:all 0.15s}
+.b-arrow:hover{border-color:var(--border3);color:var(--text)}
+
+/* ─── SECTION HEADER ─── */
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:20px 28px 12px}
+.sec-title{font-size:14px;font-weight:500;letter-spacing:0.5px}
+.sec-more{font-size:11px;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:3px;font-family:var(--mono)}
+.sec-more:hover{color:var(--text2)}
+
+/* ─── FILTER CHIPS ─── */
+.filter-row{display:flex;gap:7px;padding:0 28px 14px;overflow-x:auto;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all 0.15s;font-family:var(--sans)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#080808;font-weight:600}
+.chip:hover:not(.on){border-color:var(--border3);color:var(--text)}
+
+/* ─── CARD GRID ─── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:0 28px 24px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all 0.15s}
+.card:hover{border-color:var(--border3);transform:translateY(-2px)}
+.card-img{width:100%;aspect-ratio:3/4;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.card-img-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.card-img-emoji{font-size:38px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4))}
+.card-img-label{font-size:9px;font-family:var(--mono);letter-spacing:1.5px;opacity:0.4;text-transform:uppercase}
+.card-stage-badge{position:absolute;top:8px;left:8px;background:var(--accent2);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;letter-spacing:0.5px;font-family:var(--mono)}
+.card-ai-badge{position:absolute;top:8px;right:8px;background:rgba(167,139,250,0.85);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:3px;letter-spacing:0.5px;font-family:var(--mono)}
+.card-body{padding:10px 12px}
+.card-idol{font-size:10px;color:var(--accent);font-weight:500;margin-bottom:2px;font-family:var(--mono)}
+.card-title{font-size:12px;font-weight:500;margin-bottom:6px;line-height:1.35}
+.card-foot{display:flex;justify-content:space-between;align-items:center}
+.card-user{font-size:10px;color:var(--text3)}
+.card-likes{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text3)}
+
+/* ─── TRENDING ROW ─── */
+.trending-row{display:flex;gap:10px;padding:0 28px 24px;overflow-x:auto;scrollbar-width:none}
+.trending-row::-webkit-scrollbar{display:none}
+.trend-card{min-width:130px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;flex-shrink:0;transition:border-color 0.15s}
+.trend-card:hover{border-color:var(--border3)}
+.trend-img{width:100%;height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;overflow:hidden}
+.trend-img img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+
+/* Placeholder gradient themes per group */
+.ph-ive{background:linear-gradient(135deg,#1a1030 0%,#2d1f5e 50%,#1a0a2e 100%)}
+.ph-njz{background:linear-gradient(135deg,#0a1628 0%,#162d54 50%,#0a1628 100%)}
+.ph-skz{background:linear-gradient(135deg,#1f0a0a 0%,#3d1010 50%,#1f0a0a 100%)}
+.ph-aespa{background:linear-gradient(135deg,#0a1f14 0%,#103d26 50%,#0a1f14 100%)}
+.ph-svt{background:linear-gradient(135deg,#1f1600 0%,#3d2e00 50%,#1f1600 100%)}
+.ph-bts{background:linear-gradient(135deg,#0f0f28 0%,#1e1e50 50%,#0f0f28 100%)}
+.ph-default{background:linear-gradient(135deg,#161616 0%,#242424 50%,#161616 100%)}
+.trend-info{padding:8px 10px}
+.trend-idol{font-size:10px;color:var(--accent);font-family:var(--mono)}
+.trend-name{font-size:12px;font-weight:500;margin-top:2px}
+
+/* ─── DETAIL PANEL (right sidebar) ─── */
+.detail-panel{position:fixed;top:var(--header);right:-480px;width:460px;height:calc(100vh - var(--header));background:var(--bg2);border-left:1px solid var(--border);z-index:300;overflow-y:auto;transition:right 0.3s cubic-bezier(0.25,0.46,0.45,0.94);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.detail-panel.open{right:0}
+.detail-panel::-webkit-scrollbar{width:4px}
+.detail-panel::-webkit-scrollbar-thumb{background:var(--border2)}
+.dp-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:1}
+.dp-close{width:32px;height:32px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;transition:all 0.15s}
+.dp-close:hover{border-color:var(--border3);color:var(--text)}
+.dp-img{width:100%;aspect-ratio:3/4;max-height:320px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;overflow:hidden}
+.dp-img img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.dp-img-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:100%}
+.dp-img-placeholder span{font-size:72px;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5))}
+.dp-body{padding:20px}
+.dp-tags{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.dp-tag{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:4px 10px;font-size:11px;font-family:var(--mono)}
+.dp-tag.idol{color:var(--accent)}
+.dp-title{font-size:18px;font-weight:700;margin-bottom:4px;line-height:1.3}
+.dp-src{font-size:12px;color:var(--text3);margin-bottom:16px}
+.dp-actions{display:flex;gap:8px;margin-bottom:16px}
+.dp-act{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all 0.15s}
+.dp-act:hover{border-color:var(--border3);color:var(--text)}
+.dp-act i{font-size:16px}
+.items-label{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-family:var(--mono);margin-bottom:10px}
+.item-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.item-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.item-left{display:flex;align-items:center;gap:10px}
+.item-name{font-size:13px;font-weight:500}
+.item-brand{font-size:11px;color:var(--text2);margin-top:1px}
+.item-price{font-size:13px;font-weight:600;color:var(--accent);font-family:var(--mono)}
+
+/* AI 분석 섹션 */
+.ai-section{background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:8px;padding:14px;margin-bottom:16px}
+.ai-label{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--accent3);font-family:var(--mono);letter-spacing:1px;margin-bottom:10px}
+.ai-label i{font-size:14px}
+.ai-result{display:flex;flex-direction:column;gap:6px}
+.ai-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(167,139,250,0.1)}
+.ai-item:last-child{border-bottom:none}
+.ai-item-name{font-size:12px;font-weight:500}
+.ai-item-conf{font-size:10px;color:var(--accent3);font-family:var(--mono)}
+
+.buy-btn{background:var(--accent);color:#080808;border:none;border-radius:6px;padding:13px;font-size:14px;font-weight:700;width:100%;cursor:pointer;font-family:var(--sans);letter-spacing:0.5px;margin-top:6px;transition:opacity 0.15s}
+.buy-btn:hover{opacity:0.88}
+
+/* ─── 대체 아이템 섹션 ─── */
+.alt-section{margin-top:20px;border-top:1px solid var(--border);padding-top:18px}
+.alt-section-label{font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;font-family:var(--mono);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.alt-section-label i{font-size:13px;color:var(--accent2)}
+.alt-tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:0}
+.alt-tab{font-size:11px;padding:6px 14px;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s;font-family:var(--sans);white-space:nowrap}
+.alt-tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.alt-tab:hover:not(.on){color:var(--text2)}
+.alt-grid{display:flex;flex-direction:column;gap:8px}
+.alt-item{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all 0.15s;position:relative}
+.alt-item:hover{border-color:var(--border3);background:var(--bg4)}
+.alt-item-thumb{width:42px;height:42px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--bg2);border:1px solid var(--border2)}
+.alt-item-info{flex:1;min-width:0}
+.alt-item-cat{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.alt-item-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alt-item-brand{font-size:11px;color:var(--text2);margin-top:1px}
+.alt-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.alt-item-price{font-size:12px;font-weight:600;color:var(--accent);font-family:var(--mono)}
+.alt-item-diff{font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:3px}
+.alt-item-diff.cheaper{background:rgba(52,211,153,0.12);color:#34d399}
+.alt-item-diff.pricier{background:rgba(255,61,87,0.1);color:var(--accent2)}
+.alt-item-diff.similar{background:rgba(255,255,255,0.05);color:var(--text3)}
+.alt-empty{text-align:center;padding:24px;font-size:12px;color:var(--text3)}
+
+/* ─── UPLOAD PAGE ─── */
+.upload-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - var(--header))}
+.upload-left{padding:32px 28px;border-right:1px solid var(--border)}
+.upload-right{padding:32px 28px;background:var(--bg2)}
+.up-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.up-sub{font-size:13px;color:var(--text3);margin-bottom:28px}
+.photo-drop{border:1.5px dashed var(--border2);border-radius:10px;aspect-ratio:3/4;max-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all 0.2s;background:var(--bg3);margin-bottom:20px;position:relative;overflow:hidden}
+.photo-drop:hover{border-color:var(--accent);background:rgba(232,255,71,0.03)}
+.photo-drop i{font-size:32px;color:var(--text3)}
+.photo-drop:hover i{color:var(--accent)}
+.photo-drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-drop-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity 0.2s}
+.photo-drop:hover .photo-drop-overlay{opacity:1}
+.photo-drop-overlay i{font-size:24px;color:#fff}
+.photo-drop-overlay span{font-size:11px;color:#fff;font-family:var(--mono)}
+.pd-label{font-size:14px;color:var(--text3)}
+.pd-sub{font-size:11px;color:var(--text3);opacity:0.6}
+.fg{margin-bottom:14px}
+.flabel{font-size:10px;color:var(--text3);letter-spacing:0.8px;margin-bottom:6px;font-family:var(--mono);text-transform:uppercase}
+.finput,.fselect{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:9px 12px;font-size:13px;font-family:var(--sans);outline:none;transition:border-color 0.15s}
+.finput:focus,.fselect:focus{border-color:var(--border3)}
+.ftags{display:flex;gap:6px;flex-wrap:wrap}
+.ftag{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:11px;color:var(--text2);cursor:pointer;transition:all 0.15s;font-family:var(--sans)}
+.ftag.on{background:var(--accent);border-color:var(--accent);color:#080808;font-weight:600}
+.item-add-btn{width:100%;background:var(--bg3);border:1px dashed var(--border2);border-radius:6px;padding:9px;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.15s;margin-top:6px}
+.item-add-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* AI 분석 미리보기 (업로드 오른쪽) */
+.ai-preview{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;height:100%}
+.ai-preview-title{font-size:13px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.ai-preview-title i{color:var(--accent3);font-size:18px}
+.ai-preview-sub{font-size:12px;color:var(--text3);margin-bottom:20px}
+.ai-placeholder{border:1.5px dashed var(--border2);border-radius:8px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:16px}
+.ai-placeholder i{font-size:28px;color:var(--text3)}
+.ai-placeholder-txt{font-size:12px;color:var(--text3);text-align:center}
+.ai-result-preview{display:flex;flex-direction:column;gap:8px}
+.ai-rp-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:space-between;opacity:0.4}
+.ai-rp-label{font-size:12px;font-weight:500}
+.ai-rp-brand{font-size:11px;color:var(--text2);margin-top:2px}
+.ai-rp-pill{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:12px;background:rgba(167,139,250,0.15);color:var(--accent3)}
+.ai-analyze-btn{width:100%;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--accent3);border-radius:6px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+.ai-analyze-btn:hover{background:rgba(167,139,250,0.18)}
+.ai-analyzing{display:none;flex-direction:column;gap:6px;margin-bottom:12px}
+.ai-prog-bar{background:var(--border);border-radius:4px;height:4px;overflow:hidden}
+.ai-prog-fill{width:0%;height:100%;background:var(--accent3);border-radius:4px;transition:width 0.8s ease}
+
+/* ─── EXPLORE PAGE ─── */
+.explore-hero{padding:28px 28px 20px}
+.explore-search{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0 16px;height:48px;margin-bottom:20px}
+.explore-search input{background:none;border:none;outline:none;color:var(--text);font-size:15px;width:100%;font-family:var(--sans)}
+.explore-search input::placeholder{color:var(--text3)}
+.explore-search i{font-size:20px;color:var(--text3)}
+.hot-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 28px 28px}
+.arch-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;cursor:pointer;transition:all 0.2s}
+.arch-card:hover{transform:translateY(-2px)}
+.arch-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.arch-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;background:var(--bg3)}
+.arch-members{display:flex;gap:-4px;margin-bottom:10px}
+.arch-m-chip{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;font-family:var(--mono);margin-left:-6px;first-child:margin-left:0}
+.arch-m-chip:first-child{margin-left:0}
+.arch-name{font-size:16px;font-weight:700;margin-bottom:3px}
+.arch-count{font-size:12px;color:var(--text3)}
+.arch-bar{height:2px;border-radius:2px;margin-top:12px;opacity:0.6}
+
+/* ─── MEMBER DETAIL (group page) ─── */
+.gd-wrap{padding:0 28px 28px}
+.gd-header{display:flex;align-items:center;gap:16px;padding:24px 0 20px}
+.gd-back{width:34px;height:34px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;transition:all 0.15s}
+.gd-back:hover{border-color:var(--border3);color:var(--text)}
+.gd-title{font-size:22px;font-weight:700}
+.gd-sub{font-size:12px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.gd-members{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.gd-mc{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:12px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);min-width:80px;transition:all 0.15s}
+.gd-mc:hover{border-color:var(--border3)}
+.gd-mc.on{border-color:var(--accent);background:rgba(232,255,71,0.04)}
+.gd-avatar{width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono)}
+.gd-mc.on .gd-avatar{border-color:var(--accent)}
+.gd-mname{font-size:11px;font-weight:500}
+.gd-mc.on .gd-mname{color:var(--accent)}
+.gd-mcount{font-size:10px;color:var(--text3);font-family:var(--mono)}
+
+/* ─── PROFILE PAGE ─── */
+.profile-layout{display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - var(--header))}
+.profile-left{padding:28px 24px;border-right:1px solid var(--border)}
+.pl-avatar{width:80px;height:80px;border-radius:50%;background:var(--bg3);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:14px}
+.pl-name{font-size:18px;font-weight:700;margin-bottom:3px}
+.pl-handle{font-size:12px;color:var(--text3);margin-bottom:6px;font-family:var(--mono)}
+.pl-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(232,255,71,0.08);border:1px solid rgba(232,255,71,0.2);border-radius:4px;padding:4px 10px;font-size:11px;color:var(--accent);margin-bottom:16px}
+.pl-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.pstat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.pstat-n{font-size:18px;font-weight:700;font-family:var(--mono)}
+.pstat-l{font-size:10px;color:var(--text3);margin-top:2px}
+.bias-section{margin-bottom:20px}
+.bs-title{font-size:10px;color:var(--text3);letter-spacing:1px;font-family:var(--mono);text-transform:uppercase;margin-bottom:8px}
+.btag{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;margin:3px;white-space:nowrap}
+.btag.add{border-style:dashed;color:var(--text3)}
+.profile-right{padding:20px 28px}
+.ptabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.ptab{padding:10px 18px;font-size:13px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s}
+.ptab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.ptab:hover:not(.on){color:var(--text2)}
+
+/* ─── OVERLAY ─── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:299;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.overlay.show{opacity:1;pointer-events:all}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ─── HEADER ─── -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo" onclick="switchScreen('feed')">BIAS</div>
+      <div class="logo-sub">beta</div>
+    </div>
+    <div class="header-search">
+      <i class="ti ti-search"></i>
+      <input type="text" placeholder="아이돌, 멤버, 코디, 아이템 검색...">
+    </div>
+    <div class="header-right">
+      <button class="hbtn hbtn-ghost" onclick="switchScreen('upload')"><i class="ti ti-camera-plus"></i>손민수 올리기</button>
+      <button class="hbtn hbtn-ghost" style="position:relative"><i class="ti ti-bell"></i><div class="notif-dot"></div></button>
+      <button class="hbtn hbtn-accent"><i class="ti ti-user"></i>수아_멀티팬</button>
+    </div>
+  </header>
+
+  <!-- ─── SIDEBAR ─── -->
+  <nav class="sidebar">
+    <div class="snav-label">메뉴</div>
+    <div class="snav-item active" onclick="switchScreen('feed');setNav(this)"><i class="ti ti-home"></i>홈 피드</div>
+    <div class="snav-item" onclick="switchScreen('explore');setNav(this)"><i class="ti ti-compass"></i>탐색</div>
+    <div class="snav-item" onclick="switchScreen('upload');setNav(this)"><i class="ti ti-camera-plus"></i>손민수 올리기</div>
+    <div class="snav-item" onclick="switchScreen('profile');setNav(this)"><i class="ti ti-user"></i>마이페이지</div>
+    <hr class="snav-divider">
+    <div class="snav-label">내 최애 그룹</div>
+    <div class="idol-nav" id="idolNav"></div>
+  </nav>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main" id="mainArea">
+
+    <!-- FEED -->
+    <div id="screen-feed" class="screen active">
+      <div class="banner-area">
+        <div class="banner-slider">
+          <div class="banner-track" id="bannerTrack">
+            <div class="banner-slide" style="background:#121200;border-color:#2a2a00;border-radius:10px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent);border-radius:10px 0 0 10px"></div>
+              <div class="b-badge b-today">TODAY</div>
+              <div class="b-content">
+                <div class="b-kicker" style="color:var(--accent)">모쟈 없냐? 모쟈 카리나 모쟈 소개해줘야쥬🥴</div>
+                <div class="b-copy">에스파 카리나 오늘 공항 착장 모자st 공개 ✈️ — 빈티지 캡 + 오버핏 코트<br>AI가 이미 아이템 찾아뒀어요. 무신사 유사템 바로 연결</div>
+                <div class="b-cta">카리나 공항 룩 보기 <i class="ti ti-arrow-right" style="font-size:11px"></i></div>
+              </div>
+              <div class="b-emoji">💚</div>
+            </div>
+            <div class="banner-slide" style="background:#0e1520;border-color:#1a2535;border-radius:10px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent3);border-radius:10px 0 0 10px"></div>
+              <div class="b-badge b-today">TODAY</div>
+              <div class="b-content">
+                <div class="b-kicker" style="color:var(--accent3)">코르티스 뮤직뱅크 착장 도착 🎵</div>
+                <div class="b-copy">오늘 음악방송 빈티지 져지 + 카고 팬츠 어디 거야?<br>팬들이 찾아낸 브랜드 + AI 분석 결과 올라왔어요</div>
+                <div class="b-cta">코르티스 착장 보기 <i class="ti ti-arrow-right" style="font-size:11px"></i></div>
+              </div>
+              <div class="b-emoji">🎤</div>
+            </div>
+            <div class="banner-slide" style="background:#0f1a14;border-color:#1a2d1e;border-radius:10px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#34d399;border-radius:10px 0 0 10px"></div>
+              <div class="b-badge b-today">TODAY</div>
+              <div class="b-content">
+                <div class="b-kicker" style="color:#34d399">아이브 원영 인스타 업로드 👗</div>
+                <div class="b-copy">방금 올라온 원영 데일리 룩 — 베이지 코트 세트<br>팬이 이미 아이템 찾아서 올림 ㅋㅋ 빠른 손</div>
+                <div class="b-cta">원영 룩 보기 <i class="ti ti-arrow-right" style="font-size:11px"></i></div>
+              </div>
+              <div class="b-emoji">✨</div>
+            </div>
+            <div class="banner-slide" style="background:#111820;border-color:#1e2d3d;border-radius:10px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#60a5fa;border-radius:10px 0 0 10px"></div>
+              <div class="b-badge b-ad">AD</div>
+              <div class="b-content">
+                <div class="b-kicker" style="color:#60a5fa">무신사 스탠다드 × BIAS</div>
+                <div class="b-copy">아이돌 무드 그대로 — 지금 최대 40% OFF<br>이번 주 K-pop 스타일 기획전</div>
+                <div class="b-cta">지금 보러가기 <i class="ti ti-arrow-right" style="font-size:11px"></i></div>
+              </div>
+              <div class="b-emoji">🛍️</div>
+            </div>
+            <div class="banner-slide" style="background:#160f14;border-color:#2d1a22;border-radius:10px">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:#f472b6;border-radius:10px 0 0 10px"></div>
+              <div class="b-badge b-ad">AD</div>
+              <div class="b-content">
+                <div class="b-kicker" style="color:#f472b6">큐레이터 모집 중 💸</div>
+                <div class="b-copy">내 그룹 손민수 사진 올리면 AI가 자동으로 아이템 분석<br>첫 달 수수료 0% — 지금 신청</div>
+                <div class="b-cta">신청하기 <i class="ti ti-arrow-right" style="font-size:11px"></i></div>
+              </div>
+              <div class="b-emoji">📸</div>
+            </div>
+          </div>
+        </div>
+        <div class="banner-controls">
+          <div class="b-dots" id="bDots">
+            <div class="b-dot on" onclick="goSlide(0)"></div>
+            <div class="b-dot" onclick="goSlide(1)"></div>
+            <div class="b-dot" onclick="goSlide(2)"></div>
+            <div class="b-dot" onclick="goSlide(3)"></div>
+            <div class="b-dot" onclick="goSlide(4)"></div>
+          </div>
+          <div class="b-arrows">
+            <div class="b-arrow" onclick="moveBanner(-1)"><i class="ti ti-chevron-left"></i></div>
+            <div class="b-arrow" onclick="moveBanner(1)"><i class="ti ti-chevron-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="chip on" onclick="setChip(this,'ALL')">전체</div>
+        <div class="chip" onclick="setChip(this,'아이브')">아이브</div>
+        <div class="chip" onclick="setChip(this,'뉴진스')">뉴진스</div>
+        <div class="chip" onclick="setChip(this,'스키즈')">스키즈</div>
+        <div class="chip" onclick="setChip(this,'에스파')">에스파</div>
+        <div class="chip" onclick="setChip(this,'세븐틴')">세븐틴</div>
+        <div class="chip" onclick="setChip(this,'BTS')">BTS</div>
+      </div>
+      <div class="filter-row" style="padding-top:0">
+        <div class="chip on" onclick="setConceptChip(this,'ALL')">전체</div>
+        <div class="chip" onclick="setConceptChip(this,'무대')">무대</div>
+        <div class="chip" onclick="setConceptChip(this,'화보')">화보</div>
+        <div class="chip" onclick="setConceptChip(this,'일상')">일상</div>
+        <div class="chip" onclick="setConceptChip(this,'공항')">공항</div>
+        <div class="chip" onclick="setConceptChip(this,'행사')">행사</div>
+      </div>
+
+      <div class="sec-head">
+        <div class="sec-title" id="feedTitle">최신 손민수</div>
+        <div class="sec-more">더보기 <i class="ti ti-chevron-right" style="font-size:11px"></i></div>
+      </div>
+      <div class="card-grid" id="feedGrid"></div>
+
+      <div class="sec-head">
+        <div class="sec-title">지금 뜨는 아이템</div>
+      </div>
+      <div class="trending-row" id="trendingRow"></div>
+    </div>
+
+    <!-- EXPLORE -->
+    <div id="screen-explore" class="screen">
+      <div class="explore-hero">
+        <div style="font-size:20px;font-weight:700;margin-bottom:4px">탐색</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:20px">아이돌, 멤버, 컨셉, 아이템으로 검색하세요</div>
+        <div class="explore-search">
+          <i class="ti ti-search"></i>
+          <input type="text" placeholder="예: 카리나 공항, 뉴진스 화보 2024, 져지...">
+        </div>
+        <div style="font-size:10px;color:var(--text3);letter-spacing:1px;font-family:var(--mono);margin-bottom:10px">인기 검색어</div>
+        <div class="hot-tags">
+          <div class="chip">카리나 공항</div><div class="chip">뉴진스 하니</div>
+          <div class="chip">스키즈 방찬</div><div class="chip">에스파 윈터</div>
+          <div class="chip">세븐틴 미니멀</div><div class="chip">BTS 뷔</div>
+          <div class="chip">빈티지 져지</div><div class="chip">올블랙</div>
+        </div>
+      </div>
+      <div class="sec-head"><div class="sec-title">그룹별 아카이브</div></div>
+      <div class="arch-grid" id="archGrid"></div>
+    </div>
+
+    <!-- GROUP DETAIL -->
+    <div id="screen-gd" class="screen">
+      <div class="gd-wrap">
+        <div class="gd-header">
+          <div class="gd-back" onclick="switchScreen('explore')"><i class="ti ti-arrow-left"></i></div>
+          <div>
+            <div class="gd-title" id="gdTitle"></div>
+            <div class="gd-sub" id="gdSub"></div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);letter-spacing:1px;font-family:var(--mono);text-transform:uppercase;margin-bottom:10px">멤버 선택</div>
+        <div class="gd-members" id="gdMembers"></div>
+        <div class="sec-head" style="padding:0 0 14px"><div class="sec-title" id="gdGridTitle">전체 코디</div></div>
+        <div class="card-grid" style="padding:0" id="gdGrid"></div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="screen-upload" class="screen">
+      <div class="upload-layout">
+        <div class="upload-left">
+          <div class="up-title">손민수 정보 올리기</div>
+          <div class="up-sub">사진을 올리면 AI가 자동으로 아이템을 분석해드려요</div>
+          <div class="photo-drop" id="photoDropArea" onclick="document.getElementById('photoFileInput').click()">
+            <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+            <div id="photoDropContent">
+              <i class="ti ti-photo-plus" style="font-size:32px;color:var(--text3);display:block;text-align:center"></i>
+              <div class="pd-label" style="text-align:center">사진 추가</div>
+              <div class="pd-sub" style="text-align:center">무대 / 화보 / 공항 / 일상</div>
+            </div>
+            <div class="photo-drop-overlay" id="photoDropOverlay">
+              <i class="ti ti-replace"></i>
+              <span>사진 교체</span>
+            </div>
+          </div>
+          <div class="fg">
+            <div class="flabel">그룹</div>
+            <select class="fselect" id="ugSelect" onchange="updateUMembers()">
+              <option value="">그룹 선택...</option>
+              <option>아이브</option><option>뉴진스</option><option>스트레이키즈</option>
+              <option>에스파</option><option>세븐틴</option><option>BTS</option>
+            </select>
+          </div>
+          <div class="fg" id="ugMemberFg" style="display:none">
+            <div class="flabel">멤버</div>
+            <select class="fselect" id="ugMemberSel"><option value="">멤버 선택...</option></select>
+          </div>
+          <div class="fg">
+            <div class="flabel">컨셉 / 상황</div>
+            <div class="ftags">
+              <div class="ftag" onclick="this.classList.toggle('on')">무대</div>
+              <div class="ftag" onclick="this.classList.toggle('on')">화보</div>
+              <div class="ftag" onclick="this.classList.toggle('on')">일상</div>
+              <div class="ftag" onclick="this.classList.toggle('on')">공항</div>
+              <div class="ftag" onclick="this.classList.toggle('on')">행사</div>
+              <div class="ftag" onclick="this.classList.toggle('on')">미니멀</div>
+              <div class="ftag" onclick="this.classList.toggle('on')">스트릿</div>
+            </div>
+          </div>
+          <div class="fg">
+            <div class="flabel">아이템 태그 (AI 분석 후 자동 입력 or 직접 추가)</div>
+            <div id="itemFields" style="display:flex;flex-direction:column;gap:6px;margin-bottom:7px"></div>
+            <div class="item-add-btn" onclick="addItem()"><i class="ti ti-plus" style="font-size:13px"></i>직접 추가</div>
+          </div>
+          <div class="fg">
+            <div class="flabel">출처</div>
+            <input type="text" class="finput" placeholder="예: 2024 케이콘 무대, 2024.03.15">
+          </div>
+          <button class="buy-btn" id="submitBtn" onclick="doUpload()">업로드</button>
+        </div>
+        <div class="upload-right">
+          <div class="ai-preview">
+            <div class="ai-preview-title"><i class="ti ti-sparkles"></i>AI 자동 분석</div>
+            <div class="ai-preview-sub">사진을 올리면 AI가 착용 아이템을 자동으로 찾아드려요</div>
+            <div class="ai-placeholder" id="aiPlaceholder">
+              <i class="ti ti-robot"></i>
+              <div class="ai-placeholder-txt">사진을 올리면<br>AI가 아이템을 분석해요</div>
+            </div>
+            <div class="ai-analyzing" id="aiAnalyzing">
+              <div style="font-size:12px;color:var(--accent3);margin-bottom:8px;font-family:var(--mono)">AI 분석 중...</div>
+              <div class="ai-prog-bar"><div class="ai-prog-fill" id="aiProgFill"></div></div>
+              <div style="font-size:11px;color:var(--text3);margin-top:6px" id="aiProgTxt">이미지 스캔 중</div>
+            </div>
+            <div class="ai-result-preview" id="aiResultItems">
+              <div class="ai-rp-item"><div><div class="ai-rp-label">상의</div><div class="ai-rp-brand">브랜드 분석 대기 중</div></div><div class="ai-rp-pill">—%</div></div>
+              <div class="ai-rp-item"><div><div class="ai-rp-label">하의</div><div class="ai-rp-brand">브랜드 분석 대기 중</div></div><div class="ai-rp-pill">—%</div></div>
+              <div class="ai-rp-item"><div><div class="ai-rp-label">신발</div><div class="ai-rp-brand">브랜드 분석 대기 중</div></div><div class="ai-rp-pill">—%</div></div>
+              <div class="ai-rp-item"><div><div class="ai-rp-label">액세서리</div><div class="ai-rp-brand">브랜드 분석 대기 중</div></div><div class="ai-rp-pill">—%</div></div>
+            </div>
+            <button class="ai-analyze-btn" id="aiAnalyzeBtn" onclick="runAIAnalysis()">
+              <i class="ti ti-sparkles"></i>AI 분석 시작
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="screen-profile" class="screen">
+      <div class="profile-layout">
+        <div class="profile-left">
+          <div class="pl-avatar">👤</div>
+          <div class="pl-name">수아_멀티팬</div>
+          <div class="pl-handle">@sua_multifan</div>
+          <div class="pl-badge"><i class="ti ti-star" style="font-size:13px"></i>큐레이터 Lv.3</div>
+          <div class="pl-stats">
+            <div class="pstat"><div class="pstat-n">47</div><div class="pstat-l">업로드</div></div>
+            <div class="pstat"><div class="pstat-n">1.2k</div><div class="pstat-l">팔로워</div></div>
+            <div class="pstat"><div class="pstat-n">3.4k</div><div class="pstat-l">좋아요</div></div>
+            <div class="pstat"><div class="pstat-n">218</div><div class="pstat-l">저장</div></div>
+          </div>
+          <div class="bias-section">
+            <div class="bs-title">내 최애</div>
+            <div class="btag">아이브 — 가을</div>
+            <div class="btag">뉴진스 — 하니</div>
+            <div class="btag">스키즈 — 방찬</div>
+            <div class="btag add"><i class="ti ti-plus" style="font-size:11px"></i>추가</div>
+          </div>
+        </div>
+        <div class="profile-right">
+          <div class="ptabs">
+            <div class="ptab on">내 업로드</div>
+            <div class="ptab">저장한 코디</div>
+            <div class="ptab">구매 이력</div>
+          </div>
+          <div class="card-grid" style="padding:0" id="profileGrid"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Detail panel -->
+<div class="overlay" id="overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detailPanel">
+  <div class="dp-header">
+    <div style="font-size:14px;font-weight:600" id="dpTitle">코디 상세</div>
+    <div class="dp-close" onclick="closeDetail()"><i class="ti ti-x"></i></div>
+  </div>
+  <div class="dp-img" id="dpImg"></div>
+  <div class="dp-body">
+    <div class="dp-tags" id="dpTags"></div>
+    <div class="dp-title" id="dpTitleMain"></div>
+    <div class="dp-src" id="dpSrc"></div>
+    <div class="dp-actions">
+      <div class="dp-act" id="likeBtn" onclick="toggleLike()"><i class="ti ti-heart"></i><span id="likeCount">0</span></div>
+      <div class="dp-act"><i class="ti ti-bookmark"></i>저장</div>
+      <div class="dp-act"><i class="ti ti-share"></i>공유</div>
+    </div>
+    <div class="ai-section">
+      <div class="ai-label"><i class="ti ti-sparkles"></i>AI 자동 분석 결과</div>
+      <div class="ai-result" id="dpAiItems"></div>
+    </div>
+    <div class="items-label">착용 아이템</div>
+    <div id="dpItems"></div>
+    <button class="buy-btn">무신사에서 유사 상품 보기</button>
+
+    <!-- 대체 아이템 추천 -->
+    <div class="alt-section">
+      <div class="alt-section-label"><i class="ti ti-replace"></i>대체 아이템 추천</div>
+      <div class="alt-tabs" id="altTabs"></div>
+      <div class="alt-grid" id="altGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const GROUPS={
+  '아이브':{color:'#a78bfa',mono:'IVE',members:[{n:'가을',i:'GA',c:142},{n:'레이',i:'REI',c:98},{n:'원영',i:'WY',c:167},{n:'유진',i:'YJ',c:89},{n:'리즈',i:'LIZ',c:76},{n:'이서',i:'IS',c:54}]},
+  '뉴진스':{color:'#60a5fa',mono:'NJS',members:[{n:'민지',i:'MJ',c:134},{n:'하니',i:'HN',c:189},{n:'다니엘',i:'DN',c:112},{n:'해린',i:'HR',c:98},{n:'혜인',i:'HI',c:87}]},
+  '스키즈':{color:'#f87171',mono:'SKZ',members:[{n:'방찬',i:'BC',c:201},{n:'리노',i:'LN',c:134},{n:'창빈',i:'CB',c:98},{n:'현진',i:'HJ',c:145},{n:'한',i:'HAN',c:87},{n:'필릭스',i:'FX',c:167},{n:'승민',i:'SM',c:76},{n:'아이엔',i:'IN',c:89}]},
+  '에스파':{color:'#4caf8a',mono:'aespa',members:[{n:'카리나',i:'KR',c:178},{n:'지젤',i:'GS',c:112},{n:'윈터',i:'WT',c:145},{n:'닝닝',i:'NN',c:98}]},
+  '세븐틴':{color:'#fbbf24',mono:'SVT',members:[{n:'에스쿱스',i:'SC',c:98},{n:'원우',i:'WW',c:76},{n:'조슈아',i:'JS',c:112},{n:'준',i:'JUN',c:87},{n:'호시',i:'HS',c:134},{n:'원',i:'WON',c:65},{n:'우지',i:'WJ',c:145},{n:'디에잇',i:'D8',c:89},{n:'민규',i:'MG',c:98},{n:'도겸',i:'DK',c:76},{n:'승관',i:'SG',c:87},{n:'버논',i:'VN',c:112},{n:'디노',i:'DN',c:67}]},
+  'BTS':{color:'#818cf8',mono:'BTS',members:[{n:'RM',i:'RM',c:234},{n:'진',i:'JIN',c:312},{n:'슈가',i:'SG',c:287},{n:'제이홉',i:'JH',c:198},{n:'지민',i:'JM',c:345},{n:'뷔',i:'V',c:389},{n:'정국',i:'JK',c:421}]},
+};
+const CARDS=[
+  {id:1,idol:'아이브',member:'가을',concept:'화보',title:'봄 화보 올화이트 룩',e:'🤍',ph:'ph-ive',color:'#a78bfa',user:'ive_archive',likes:847,
+    ai:[{cat:'상의',name:'오버사이즈 화이트 셔츠',brand:'아크네 스튜디오',conf:94},{cat:'하의',name:'와이드 팬츠',brand:'COS',conf:88},{cat:'신발',name:'로퍼',brand:'토즈',conf:91}],
+    items:[{n:'오버사이즈 화이트 셔츠',b:'아크네 스튜디오',p:'₩420,000'},{n:'와이드 팬츠',b:'COS',p:'₩89,000'},{n:'로퍼',b:'토즈',p:'₩580,000'}],
+    src:'2024 더글로리 화보',
+    alts:{
+      '상의':[{e:'👕',name:'오버사이즈 린넨 셔츠',brand:'무지(MUJI)',price:'₩49,000',diff:'cheaper'},{e:'🤍',name:'크롭 화이트 셔츠',brand:'자라(ZARA)',price:'₩59,000',diff:'cheaper'},{e:'👗',name:'오프숄더 블라우스',brand:'앤아더스토리즈',price:'₩159,000',diff:'cheaper'}],
+      '하의':[{e:'👖',name:'와이드 리넨 팬츠',brand:'유니클로',price:'₩49,900',diff:'cheaper'},{e:'🩳',name:'버뮤다 와이드 팬츠',brand:'H&M',price:'₩39,000',diff:'cheaper'},{e:'👖',name:'테일러드 와이드 팬츠',brand:'마시모두띠',price:'₩129,000',diff:'cheaper'}],
+      '악세서리':[{e:'👜',name:'미니 토트백',brand:'꼼데가르송',price:'₩320,000',diff:'cheaper'},{e:'🕶️',name:'오벌 선글라스',brand:'젠틀몬스터',price:'₩280,000',diff:'cheaper'},{e:'💍',name:'실버 레이어링 목걸이',brand:'스톤헨지',price:'₩89,000',diff:'cheaper'}]
+    }
+  },
+  {id:2,idol:'뉴진스',member:'하니',concept:'일상',title:'공항 캐주얼 베이지 세트',e:'🧸',ph:'ph-njz',color:'#60a5fa',user:'njz_daily',likes:612,
+    ai:[{cat:'상의',name:'베이지 가디건',brand:'유니클로',conf:96},{cat:'하의',name:'와이드 데님',brand:'리바이스',conf:89}],
+    items:[{n:'베이지 가디건',b:'유니클로',p:'₩49,900'},{n:'와이드 데님',b:'리바이스',p:'₩89,000'}],
+    src:'2024.04.12 인천공항',
+    alts:{
+      '상의':[{e:'🧶',name:'크롭 니트 가디건',brand:'자라',price:'₩79,000',diff:'pricier'},{e:'👚',name:'오버사이즈 크루넥',brand:'무지',price:'₩39,000',diff:'cheaper'},{e:'🧥',name:'숄 카라 가디건',brand:'앤아더스토리즈',price:'₩189,000',diff:'pricier'}],
+      '하의':[{e:'👖',name:'배럴핏 데님',brand:'아베크롬비',price:'₩99,000',diff:'similar'},{e:'👖',name:'하이라이즈 와이드 진',brand:'H&M',price:'₩49,000',diff:'cheaper'},{e:'👖',name:'릴렉스드 진',brand:'아르켓',price:'₩129,000',diff:'pricier'}],
+      '악세서리':[{e:'🧢',name:'코듀로이 버킷햇',brand:'디스이즈네버댓',price:'₩69,000',diff:'cheaper'},{e:'👜',name:'캔버스 숄더백',brand:'마르니',price:'₩520,000',diff:'pricier'},{e:'🧣',name:'울 머플러',brand:'아크네 스튜디오',price:'₩380,000',diff:'pricier'}]
+    }
+  },
+  {id:3,idol:'스키즈',member:'방찬',concept:'무대',title:'파리 콘서트 올블랙',e:'🖤',ph:'ph-skz',color:'#f87171',user:'stays_kz',likes:1203,
+    ai:[{cat:'아우터',name:'레더 바이커 재킷',brand:'생로랑',conf:92},{cat:'하의',name:'블랙 스키니 팬츠',brand:'아크네',conf:87},{cat:'신발',name:'첼시 부츠',brand:'닥터마틴',conf:95}],
+    items:[{n:'레더 바이커 재킷',b:'생로랑',p:'₩2,100,000'},{n:'블랙 스키니 팬츠',b:'아크네',p:'₩310,000'},{n:'첼시 부츠',b:'닥터마틴',p:'₩189,000'}],
+    src:'2024 MANIAC 파리 콘서트',
+    alts:{
+      '상의':[{e:'🖤',name:'오버사이즈 블랙 티셔츠',brand:'릭오웬스',price:'₩480,000',diff:'cheaper'},{e:'👕',name:'롱슬리브 블랙 티',brand:'무지',price:'₩29,000',diff:'cheaper'},{e:'🧥',name:'블랙 후드 집업',brand:'팜엔젤스',price:'₩890,000',diff:'similar'}],
+      '하의':[{e:'👖',name:'슬림 블랙 슬랙스',brand:'COS',price:'₩119,000',diff:'cheaper'},{e:'👖',name:'블랙 카고 팬츠',brand:'디키즈',price:'₩79,000',diff:'cheaper'},{e:'👖',name:'스키니 블랙 진',brand:'누디진',price:'₩290,000',diff:'cheaper'}],
+      '악세서리':[{e:'💍',name:'블랙 체인 목걸이',brand:'워터앤더오일',price:'₩89,000',diff:'cheaper'},{e:'🕶️',name:'스퀘어 선글라스',brand:'젠틀몬스터',price:'₩300,000',diff:'pricier'},{e:'🧤',name:'레더 글러브',brand:'마르케사노',price:'₩149,000',diff:'cheaper'}]
+    }
+  },
+  {id:4,idol:'에스파',member:'카리나',concept:'공항',title:'공항 착장 모자st 빈티지 캡 룩',e:'💚',ph:'ph-aespa',color:'#4caf8a',user:'aespa_fit',likes:2341,
+    ai:[{cat:'모자',name:'빈티지 캡',brand:'꼼데가르송',conf:97},{cat:'아우터',name:'크롭 레더 재킷',brand:'MM6',conf:91},{cat:'하의',name:'슬랙스',brand:'마르니',conf:85}],
+    items:[{n:'버킷햇',b:'꼼데가르송',p:'₩189,000'},{n:'크롭 레더 재킷',b:'MM6',p:'₩890,000'},{n:'슬랙스',b:'마르니',p:'₩430,000'}],
+    src:'2024 인천공항 출국',
+    alts:{
+      '상의':[{e:'🧥',name:'크롭 빈티지 재킷',brand:'빈티지헌터',price:'₩120,000',diff:'cheaper'},{e:'🧥',name:'페이크레더 재킷',brand:'자라',price:'₩159,000',diff:'cheaper'},{e:'🧥',name:'오버사이즈 블레이저',brand:'아르켓',price:'₩289,000',diff:'cheaper'}],
+      '하의':[{e:'👖',name:'테일러드 슬랙스',brand:'COS',price:'₩139,000',diff:'cheaper'},{e:'👖',name:'와이드 크롭 팬츠',brand:'H&M',price:'₩49,000',diff:'cheaper'},{e:'🩳',name:'미니 스커트',brand:'아페쎄',price:'₩290,000',diff:'cheaper'}],
+      '악세서리':[{e:'🧢',name:'베이스볼 캡',brand:'뉴에라',price:'₩59,000',diff:'cheaper'},{e:'👜',name:'미니 크로스백',brand:'자라',price:'₩69,000',diff:'cheaper'},{e:'🕶️',name:'오벌 틴티드 선글라스',brand:'젠틀몬스터',price:'₩280,000',diff:'pricier'}]
+    }
+  },
+  {id:5,idol:'세븐틴',member:'버논',concept:'공항',title:'LA 공항 스트릿 룩',e:'🧡',ph:'ph-svt',color:'#fbbf24',user:'svt_closet',likes:423,
+    ai:[{cat:'상의',name:'그래픽 후디',brand:'슈프림',conf:93},{cat:'하의',name:'카고 팬츠',brand:'디키즈',conf:90}],
+    items:[{n:'그래픽 후디',b:'슈프림',p:'₩210,000'},{n:'카고 팬츠',b:'디키즈',p:'₩69,000'}],
+    src:'2024.06.03 LA공항',
+    alts:{
+      '상의':[{e:'👕',name:'빈티지 그래픽 후디',brand:'챔피언',price:'₩89,000',diff:'cheaper'},{e:'👕',name:'크루넥 스웨트셔츠',brand:'커버낫',price:'₩79,000',diff:'cheaper'},{e:'🧥',name:'집업 후드 재킷',brand:'나이키',price:'₩129,000',diff:'cheaper'}],
+      '하의':[{e:'👖',name:'멀티포켓 카고',brand:'카하트',price:'₩189,000',diff:'pricier'},{e:'👖',name:'와이드 카고 팬츠',brand:'유니클로',price:'₩59,000',diff:'cheaper'},{e:'👖',name:'배기 카고 팬츠',brand:'스톤아일랜드',price:'₩480,000',diff:'pricier'}],
+      '악세서리':[{e:'🧢',name:'스냅백 캡',brand:'뉴에라',price:'₩59,000',diff:'cheaper'},{e:'👟',name:'로우탑 스니커즈',brand:'컨버스',price:'₩89,000',diff:'cheaper'},{e:'🎒',name:'미니 백팩',brand:'슈프림',price:'₩180,000',diff:'cheaper'}]
+    }
+  },
+  {id:6,idol:'아이브',member:'레이',concept:'화보',title:'여름 잡지 화보 레트로',e:'🌸',ph:'ph-ive',color:'#a78bfa',user:'ive_archive',likes:756,
+    ai:[{cat:'원피스',name:'플로럴 미디 드레스',brand:'자라',conf:88},{cat:'모자',name:'스트로우 햇',brand:'H&M',conf:94}],
+    items:[{n:'플로럴 미디 드레스',b:'자라',p:'₩89,000'},{n:'스트로우 햇',b:'H&M',p:'₩29,000'}],
+    src:'2024 엘르 화보',
+    alts:{
+      '상의':[{e:'👗',name:'플로럴 맥시 드레스',brand:'앤아더스토리즈',price:'₩189,000',diff:'pricier'},{e:'👗',name:'리넨 미디 드레스',brand:'마시모두띠',price:'₩149,000',diff:'pricier'},{e:'👗',name:'체크 썬드레스',brand:'H&M',price:'₩49,000',diff:'cheaper'}],
+      '하의':[{e:'🩱',name:'크롭 블라우스 + 롱 스커트',brand:'자라',price:'₩99,000',diff:'similar'},{e:'👖',name:'와이드 플리츠 팬츠',brand:'COS',price:'₩129,000',diff:'pricier'},{e:'🩳',name:'플로럴 미디 스커트',brand:'아르켓',price:'₩159,000',diff:'pricier'}],
+      '악세서리':[{e:'👒',name:'파나마 햇',brand:'로크앤코',price:'₩189,000',diff:'pricier'},{e:'👜',name:'라피아 버킷백',brand:'자라',price:'₩59,000',diff:'pricier'},{e:'💛',name:'골드 레이어링 목걸이',brand:'판도라',price:'₩89,000',diff:'similar'}]
+    }
+  },
+  {id:7,idol:'뉴진스',member:'민지',concept:'무대',title:'뮤직뱅크 빈티지 져지 + 카고 팬츠 룩',e:'💙',ph:'ph-njz',color:'#60a5fa',user:'njz_daily',likes:534,
+    ai:[{cat:'상의',name:'빈티지 져지',brand:'챔피언',conf:91},{cat:'하의',name:'카고 팬츠',brand:'디키즈',conf:89}],
+    items:[{n:'빈티지 져지',b:'챔피언',p:'₩89,000'},{n:'카고 팬츠',b:'디키즈',p:'₩79,000'}],
+    src:'2024 뮤직뱅크',
+    alts:{
+      '상의':[{e:'👕',name:'레트로 져지 티',brand:'나이키',price:'₩79,000',diff:'cheaper'},{e:'👕',name:'빈티지 스트라이프 져지',brand:'아디다스',price:'₩99,000',diff:'similar'},{e:'👕',name:'컬러블록 져지',brand:'푸마',price:'₩69,000',diff:'cheaper'}],
+      '하의':[{e:'👖',name:'슬림 카고 팬츠',brand:'유니클로',price:'₩59,000',diff:'cheaper'},{e:'👖',name:'와이드 카고 트라우저',brand:'카하트',price:'₩199,000',diff:'pricier'},{e:'🩳',name:'카고 숏 팬츠',brand:'디키즈',price:'₩59,000',diff:'similar'}],
+      '악세서리':[{e:'🧢',name:'빈티지 야구 모자',brand:'뉴에라',price:'₩59,000',diff:'cheaper'},{e:'👟',name:'청키 스니커즈',brand:'뉴발란스',price:'₩159,000',diff:'pricier'},{e:'🎽',name:'크로스 미니백',brand:'나이키',price:'₩49,000',diff:'cheaper'}]
+    }
+  },
+  {id:8,idol:'BTS',member:'뷔',concept:'일상',title:'파리 여행 빈티지 코트 룩',e:'💜',ph:'ph-bts',color:'#818cf8',user:'army_closet',likes:3421,
+    ai:[{cat:'아우터',name:'빈티지 가죽 코트',brand:'셀린느',conf:96},{cat:'하의',name:'슬림 팬츠',brand:'에르메스',conf:88}],
+    items:[{n:'빈티지 가죽 코트',b:'셀린느',p:'₩3,200,000'},{n:'슬림 팬츠',b:'에르메스',p:'₩890,000'}],
+    src:'2024 파리 여행',
+    alts:{
+      '상의':[{e:'🧥',name:'오버사이즈 더플 코트',brand:'막스마라',price:'₩1,200,000',diff:'cheaper'},{e:'🧥',name:'빈티지 레더 코트',brand:'아크네 스튜디오',price:'₩1,800,000',diff:'cheaper'},{e:'🧥',name:'롱 울 오버코트',brand:'COS',price:'₩390,000',diff:'cheaper'}],
+      '하의':[{e:'👖',name:'슬림 테일러드 팬츠',brand:'아크네',price:'₩380,000',diff:'cheaper'},{e:'👖',name:'와이드 울 팬츠',brand:'마르니',price:'₩560,000',diff:'cheaper'},{e:'👖',name:'크리즈 슬랙스',brand:'COS',price:'₩159,000',diff:'cheaper'}],
+      '악세서리':[{e:'🕶️',name:'클래식 선글라스',brand:'레이밴',price:'₩210,000',diff:'cheaper'},{e:'👜',name:'미디엄 토트백',brand:'아페쎄',price:'₩590,000',diff:'cheaper'},{e:'🧣',name:'캐시미어 스카프',brand:'아크네 스튜디오',price:'₩380,000',diff:'cheaper'}]
+    }
+  },
+  {id:9,idol:'에스파',member:'윈터',concept:'화보',title:'겨울 화보 올블랙 엣지',e:'❄️',ph:'ph-aespa',color:'#4caf8a',user:'aespa_fit',likes:678,
+    ai:[{cat:'아우터',name:'레더 트렌치',brand:'보테가베네타',conf:93},{cat:'신발',name:'블랙 부츠',brand:'발렌시아가',conf:90}],
+    items:[{n:'레더 트렌치',b:'보테가베네타',p:'₩4,100,000'},{n:'블랙 부츠',b:'발렌시아가',p:'₩890,000'}],
+    src:'2024 보그 화보',
+    alts:{
+      '상의':[{e:'🧥',name:'페이크레더 트렌치',brand:'자라',price:'₩199,000',diff:'cheaper'},{e:'🧥',name:'블랙 울 코트',brand:'마시모두띠',price:'₩389,000',diff:'cheaper'},{e:'🧥',name:'PU 레더 재킷',brand:'아르켓',price:'₩289,000',diff:'cheaper'}],
+      '하의':[{e:'👖',name:'블랙 와이드 팬츠',brand:'COS',price:'₩119,000',diff:'cheaper'},{e:'🩱',name:'블랙 미디 스커트',brand:'아페쎄',price:'₩280,000',diff:'cheaper'},{e:'👖',name:'블랙 테일러드 슬랙스',brand:'무지',price:'₩59,000',diff:'cheaper'}],
+      '악세서리':[{e:'🥾',name:'블랙 앵클 부츠',brand:'닥터마틴',price:'₩219,000',diff:'cheaper'},{e:'🕶️',name:'블랙 스퀘어 선글라스',brand:'젠틀몬스터',price:'₩300,000',diff:'cheaper'},{e:'👜',name:'블랙 미니백',brand:'자라',price:'₩79,000',diff:'cheaper'}]
+    }
+  },
+];
+const TRENDING=[
+  {idol:'에스파',name:'카리나 버킷햇',e:'🧢',ph:'ph-aespa'},{idol:'뉴진스',name:'빈티지 져지',e:'👕',ph:'ph-njz'},
+  {idol:'스키즈',name:'레더 재킷',e:'🖤',ph:'ph-skz'},{idol:'아이브',name:'올화이트 셔츠',e:'🤍',ph:'ph-ive'},{idol:'BTS',name:'빈티지 코트',e:'🎩',ph:'ph-bts'},
+];
+
+let bIdx=0,bTotal=5,liked=false,likeBase=0,itemCount=0;
+let feedGroup='ALL',feedConcept='ALL';
+
+// Banner
+function goSlide(n){
+  bIdx=n;
+  document.getElementById('bannerTrack').style.transform=`translateX(-${bIdx*100}%)`;
+  document.querySelectorAll('.b-dot').forEach((d,i)=>d.classList.toggle('on',i===bIdx));
+}
+function moveBanner(d){goSlide((bIdx+d+bTotal)%bTotal);}
+setInterval(()=>moveBanner(1),4500);
+
+// Nav
+function setNav(el){document.querySelectorAll('.snav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+function switchScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  const map={feed:0,explore:1,upload:2,profile:3};
+  document.querySelectorAll('.snav-item').forEach((n,i)=>n.classList.toggle('active',i===map[id]));
+}
+
+// Chips
+function setChip(el,group){
+  document.querySelectorAll('.filter-row:first-of-type .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  feedGroup=group;
+  applyFilter();
+}
+function setConceptChip(el,concept){
+  const rows=document.querySelectorAll('.filter-row');
+  rows[1].querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  feedConcept=concept;
+  applyFilter();
+}
+function applyFilter(){
+  let data=CARDS;
+  if(feedGroup!=='ALL') data=data.filter(c=>c.idol===feedGroup);
+  if(feedConcept!=='ALL') data=data.filter(c=>c.concept===feedConcept);
+  renderCards('feedGrid',data.length?data:CARDS);
+  document.getElementById('feedTitle').textContent=
+    feedGroup==='ALL'?'최신 손민수':feedGroup+(feedConcept!=='ALL'?' — '+feedConcept:'');
+}
+
+function getPlaceholderBg(card){
+  const map={'아이브':'ph-ive','뉴진스':'ph-njz','스키즈':'ph-skz','에스파':'ph-aespa','세븐틴':'ph-svt','BTS':'ph-bts'};
+  return map[card.idol]||'ph-default';
+}
+function renderCards(id,data){
+  const g=document.getElementById(id);
+  if(!g)return;
+  g.innerHTML='';
+  if(!data.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;font-size:13px;color:#4a4a4a">코디가 없습니다</div>';return;}
+  data.forEach(c=>{
+    const el=document.createElement('div');
+    el.className='card';
+    el.onclick=()=>openDetail(c);
+    const ph=getPlaceholderBg(c);
+    const imgHtml=c.imgSrc
+      ?`<img src="${c.imgSrc}" alt="${c.title}" loading="lazy">`
+      :`<div class="card-img-placeholder">
+          <div class="card-img-emoji">${c.e}</div>
+          <div class="card-img-label">${c.concept}</div>
+        </div>`;
+    el.innerHTML=`<div class="card-img ${ph}">${imgHtml}${c.concept==='무대'?'<div class="card-stage-badge">STAGE</div>':''}<div class="card-ai-badge">AI</div></div><div class="card-body"><div class="card-idol">${c.idol} · ${c.member}</div><div class="card-title">${c.title}</div><div class="card-foot"><div class="card-user">@${c.user}</div><div class="card-likes"><i class="ti ti-heart" style="font-size:12px"></i>${c.likes.toLocaleString()}</div></div></div>`;
+    g.appendChild(el);
+  });
+}
+
+// Detail panel
+function openDetail(card){
+  document.getElementById('dpTitle').textContent=card.idol+' — '+card.member;
+  const dpImg=document.getElementById('dpImg');
+  const ph=getPlaceholderBg(card);
+  dpImg.className='dp-img '+ph;
+  dpImg.innerHTML=card.imgSrc
+    ?`<img src="${card.imgSrc}" alt="${card.title}">`
+    :`<div class="dp-img-placeholder"><span>${card.e}</span></div>`;
+  const tags=document.getElementById('dpTags');
+  tags.innerHTML=`<div class="dp-tag idol">${card.idol}</div><div class="dp-tag">${card.member}</div><div class="dp-tag">${card.concept}</div>`;
+  document.getElementById('dpTitleMain').textContent=card.title;
+  document.getElementById('dpSrc').textContent='@'+card.user+(card.src?' · '+card.src:'');
+  likeBase=card.likes; liked=false;
+  document.getElementById('likeCount').textContent=likeBase.toLocaleString();
+  document.querySelector('#likeBtn i').style.color='';
+  // AI items
+  const ai=document.getElementById('dpAiItems');
+  ai.innerHTML=(card.ai||[]).map(a=>`<div class="ai-item"><div><div class="item-name">${a.cat} — ${a.name}</div><div class="item-brand" style="font-size:11px;color:#888;margin-top:1px">${a.brand}</div></div><div style="font-size:11px;font-family:var(--mono);color:var(--accent3)">${a.conf}%</div></div>`).join('');
+  // items
+  const items=document.getElementById('dpItems');
+  items.innerHTML=card.items.map(it=>`<div class="item-row"><div class="item-left"><div class="item-dot"></div><div><div class="item-name">${it.n}</div><div class="item-brand">${it.b}</div></div></div><div class="item-price">${it.p}</div></div>`).join('');
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+  // Alt items
+  renderAltItems(card.alts||{});
+}
+
+let currentAltData={};
+let currentAltCat='상의';
+function renderAltItems(alts){
+  currentAltData=alts;
+  const cats=Object.keys(alts);
+  const tabsEl=document.getElementById('altTabs');
+  const gridEl=document.getElementById('altGrid');
+  if(!cats.length){tabsEl.innerHTML='';gridEl.innerHTML='<div class="alt-empty">대체 아이템 정보가 없습니다</div>';return;}
+  currentAltCat=cats[0];
+  tabsEl.innerHTML=cats.map(cat=>`<div class="alt-tab${cat===currentAltCat?' on':''}" onclick="selectAltCat(this,'${cat}')">${cat}</div>`).join('');
+  renderAltGrid(alts[currentAltCat]||[]);
+}
+function selectAltCat(el,cat){
+  document.querySelectorAll('.alt-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  currentAltCat=cat;
+  renderAltGrid(currentAltData[cat]||[]);
+}
+function renderAltGrid(items){
+  const g=document.getElementById('altGrid');
+  if(!items.length){g.innerHTML='<div class="alt-empty">해당 카테고리 대체 아이템이 없습니다</div>';return;}
+  const diffLabel={cheaper:'💚 더 저렴',pricier:'🔴 더 비쌈',similar:'⚪ 비슷한 가격'};
+  g.innerHTML=items.map(it=>`
+    <div class="alt-item">
+      <div class="alt-item-thumb">${it.e}</div>
+      <div class="alt-item-info">
+        <div class="alt-item-cat">${currentAltCat}</div>
+        <div class="alt-item-name">${it.name}</div>
+        <div class="alt-item-brand">${it.brand}</div>
+      </div>
+      <div class="alt-item-right">
+        <div class="alt-item-price">${it.price}</div>
+        <div class="alt-item-diff ${it.diff}">${diffLabel[it.diff]||''}</div>
+      </div>
+    </div>`).join('');
+}
+function closeDetail(){
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+function toggleLike(){
+  liked=!liked;
+  document.querySelector('#likeBtn i').style.color=liked?'#ff3d57':'';
+  document.getElementById('likeCount').textContent=(likeBase+(liked?1:0)).toLocaleString();
+}
+
+// Sidebar idol nav
+function buildIdolNav(){
+  const nav=document.getElementById('idolNav');
+  nav.innerHTML='';
+  Object.entries(GROUPS).forEach(([name,g])=>{
+    const el=document.createElement('div');
+    el.className='idol-nav-item';
+    el.innerHTML=`<div class="idol-nav-avatar" style="color:${g.color};background:${g.color}18;border-color:${g.color}44">${g.mono}</div><div class="idol-nav-name">${name}</div><div class="idol-nav-count">${g.members.reduce((s,m)=>s+m.c,0)}</div>`;
+    el.onclick=()=>{
+      document.querySelectorAll('.idol-nav-item').forEach(n=>n.classList.remove('active'));
+      el.classList.add('active');
+      openGroupDetail(name);
+    };
+    nav.appendChild(el);
+  });
+}
+
+// Trending
+function renderTrending(){
+  const row=document.getElementById('trendingRow');
+  TRENDING.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='trend-card';
+    el.innerHTML=`<div class="trend-img ${t.ph||'ph-default'}" style="display:flex;align-items:center;justify-content:center;font-size:32px">${t.e}</div><div class="trend-info"><div class="trend-idol">${t.idol}</div><div class="trend-name">${t.name}</div></div>`;
+    row.appendChild(el);
+  });
+}
+
+// Archive
+function renderArchive(){
+  const g=document.getElementById('archGrid');
+  Object.entries(GROUPS).forEach(([name,gr])=>{
+    const total=gr.members.reduce((s,m)=>s+m.c,0);
+    const el=document.createElement('div');
+    el.className='arch-card';
+    el.innerHTML=`
+      <div class="arch-card-top">
+        <div class="arch-badge" style="color:${gr.color};border:1px solid ${gr.color}44">${gr.mono}</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${gr.members.length}명</div>
+      </div>
+      <div class="arch-members">${gr.members.slice(0,5).map((m,i)=>`<div class="arch-m-chip" style="color:${gr.color};border-color:${gr.color}44;margin-left:${i?'-6px':'0'}">${m.i}</div>`).join('')}</div>
+      <div class="arch-name">${name}</div>
+      <div class="arch-count">${total.toLocaleString()}개의 코디 아카이브</div>
+      <div class="arch-bar" style="background:${gr.color}"></div>`;
+    el.onmouseenter=()=>el.style.borderColor=gr.color+'88';
+    el.onmouseleave=()=>el.style.borderColor='var(--border)';
+    el.onclick=()=>openGroupDetail(name);
+    g.appendChild(el);
+  });
+}
+
+// Group detail
+function openGroupDetail(name){
+  const g=GROUPS[name];
+  document.getElementById('gdTitle').textContent=name;
+  document.getElementById('gdSub').textContent=`${g.members.length}명 · ${g.members.reduce((s,m)=>s+m.c,0).toLocaleString()}개 코디`;
+  const mem=document.getElementById('gdMembers');
+  mem.innerHTML='';
+  // All chip
+  const allEl=document.createElement('div');
+  allEl.className='gd-mc on';
+  allEl.innerHTML=`<div class="gd-avatar" style="color:var(--accent);border-color:var(--accent)44">ALL</div><div class="gd-mname">전체</div><div class="gd-mcount">${g.members.reduce((s,m)=>s+m.c,0)}</div>`;
+  allEl.onclick=()=>{mem.querySelectorAll('.gd-mc').forEach(c=>c.classList.remove('on'));allEl.classList.add('on');document.getElementById('gdGridTitle').textContent=`${name} — 전체 코디`;renderCards('gdGrid',CARDS.filter(c=>c.idol===name).length?CARDS.filter(c=>c.idol===name):CARDS.slice(0,3));};
+  mem.appendChild(allEl);
+  g.members.forEach(m=>{
+    const el=document.createElement('div');
+    el.className='gd-mc';
+    el.innerHTML=`<div class="gd-avatar" style="color:${g.color};border-color:${g.color}44">${m.i}</div><div class="gd-mname">${m.n}</div><div class="gd-mcount">${m.c}</div>`;
+    el.onclick=()=>{
+      mem.querySelectorAll('.gd-mc').forEach(c=>c.classList.remove('on'));
+      el.classList.add('on');
+      document.getElementById('gdGridTitle').textContent=`${name} — ${m.n} 코디`;
+      const filtered=CARDS.filter(c=>c.idol===name&&c.member===m.n);
+      renderCards('gdGrid',filtered.length?filtered:[{id:99,idol:name,member:m.n,concept:'',title:'아직 업로드된 코디가 없어요 — 첫 번째로 올려봐요!',e:'📷',user:'',likes:0,ai:[],items:[],src:''}]);
+    };
+    mem.appendChild(el);
+  });
+  renderCards('gdGrid',CARDS.filter(c=>c.idol===name).length?CARDS.filter(c=>c.idol===name):CARDS.slice(0,3));
+  switchScreen('gd');
+}
+
+// Upload
+function updateUMembers(){
+  const g=document.getElementById('ugSelect').value;
+  const fg=document.getElementById('ugMemberFg');
+  const sel=document.getElementById('ugMemberSel');
+  if(!g||!GROUPS[g]){fg.style.display='none';return;}
+  sel.innerHTML='<option value="">멤버 선택...</option>'+GROUPS[g].members.map(m=>`<option>${m.n}</option>`).join('');
+  fg.style.display='block';
+}
+function addItem(){
+  if(itemCount>=5)return;
+  itemCount++;
+  const f=document.getElementById('itemFields');
+  const d=document.createElement('div');
+  d.style.cssText='display:flex;gap:8px';
+  d.innerHTML=`<input type="text" placeholder="아이템명" class="finput" style="flex:2"><input type="text" placeholder="가격" class="finput" style="flex:1">`;
+  f.appendChild(d);
+}
+let uploadedPhotoDataUrl=null;
+function handlePhotoUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    uploadedPhotoDataUrl=ev.target.result;
+    const area=document.getElementById('photoDropArea');
+    const content=document.getElementById('photoDropContent');
+    // Remove existing preview img if any
+    const existing=area.querySelector('img.photo-preview');
+    if(existing)existing.remove();
+    const img=document.createElement('img');
+    img.src=uploadedPhotoDataUrl;
+    img.className='photo-preview';
+    img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+    area.insertBefore(img,content);
+    content.style.display='none';
+    area.style.borderColor='var(--accent)';
+    area.style.borderStyle='solid';
+    // Auto-run AI analysis
+    runAIAnalysis();
+  };
+  reader.readAsDataURL(file);
+}
+function triggerAI(){
+  document.getElementById('photoDropArea').style.borderColor='var(--accent)';
+}
+let aiRunning=false;
+function runAIAnalysis(){
+  if(aiRunning)return;
+  aiRunning=true;
+  const btn=document.getElementById('aiAnalyzeBtn');
+  const placeholder=document.getElementById('aiPlaceholder');
+  const analyzing=document.getElementById('aiAnalyzing');
+  const results=document.getElementById('aiResultItems');
+  const fill=document.getElementById('aiProgFill');
+  const txt=document.getElementById('aiProgTxt');
+  placeholder.style.display='none';
+  analyzing.style.display='flex';
+  results.style.display='none';
+  btn.style.opacity='0.5';
+  const steps=[
+    [15,'이미지 스캔 중'],[35,'의류 영역 감지 중'],[55,'브랜드 패턴 분석 중'],
+    [75,'데이터베이스 매칭 중'],[92,'결과 정리 중'],[100,'분석 완료!']
+  ];
+  let i=0;
+  const t=setInterval(()=>{
+    if(i>=steps.length){
+      clearInterval(t);
+      setTimeout(()=>{
+        analyzing.style.display='none';
+        results.style.display='flex';
+        const items=document.querySelectorAll('.ai-rp-item');
+        const data=[
+          ['상의','빈티지 져지','챔피언 Heritage','91%'],
+          ['하의','카고 팬츠','디키즈 Original','89%'],
+          ['신발','로우탑 스니커즈','컨버스 척테일러','87%'],
+          ['모자','버킷햇','꼼데가르송','94%'],
+        ];
+        items.forEach((el,idx)=>{
+          el.style.opacity='1';
+          el.querySelector('.ai-rp-label').textContent=data[idx][0]+' — '+data[idx][1];
+          el.querySelector('.ai-rp-brand').textContent=data[idx][2];
+          el.querySelector('.ai-rp-pill').textContent=data[idx][3];
+        });
+        btn.textContent='✓ 분석 완료';
+        btn.style.background='rgba(52,211,153,0.1)';
+        btn.style.borderColor='rgba(52,211,153,0.3)';
+        btn.style.color='#34d399';
+        aiRunning=false;
+      },400);
+      return;
+    }
+    fill.style.width=steps[i][0]+'%';
+    txt.textContent=steps[i][1];
+    i++;
+  },600);
+}
+function doUpload(){
+  const btn=document.getElementById('submitBtn');
+  btn.textContent='업로드 완료!';
+  btn.style.background='#1a3a1a';
+  btn.style.color='#34d399';
+  setTimeout(()=>{
+    btn.textContent='업로드';btn.style.background='';btn.style.color='';
+    itemCount=0;document.getElementById('itemFields').innerHTML='';aiRunning=false;
+    // Reset photo
+    uploadedPhotoDataUrl=null;
+    const area=document.getElementById('photoDropArea');
+    const existing=area.querySelector('img.photo-preview');
+    if(existing)existing.remove();
+    document.getElementById('photoDropContent').style.display='';
+    area.style.borderColor='';area.style.borderStyle='';
+    document.getElementById('photoFileInput').value='';
+  },2500);
+}
+
+// Profile tabs
+document.querySelectorAll('.ptab').forEach(t=>{
+  t.onclick=()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('on'));t.classList.add('on');};
+});
+
+// Init
+renderCards('feedGrid',CARDS);
+renderCards('profileGrid',CARDS.slice(0,4));
+renderTrending();
+renderArchive();
+buildIdolNav();
+
+// Drag & Drop for photo upload
+(function(){
+  const area=document.getElementById('photoDropArea');
+  if(!area)return;
+  ['dragenter','dragover'].forEach(ev=>area.addEventListener(ev,e=>{e.preventDefault();area.style.borderColor='var(--accent)';}));
+  ['dragleave','dragend'].forEach(ev=>area.addEventListener(ev,()=>{if(!uploadedPhotoDataUrl)area.style.borderColor='';}));
+  area.addEventListener('drop',e=>{
+    e.preventDefault();
+    const file=e.dataTransfer.files[0];
+    if(file&&file.type.startsWith('image/')){
+      const dt=new DataTransfer();dt.items.add(file);
+      document.getElementById('photoFileInput').files=dt.files;
+      handlePhotoUpload({target:{files:[file]}});
+    }
+  });
+})();
+</script>
+</body>
+</html>
